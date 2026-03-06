@@ -1,0 +1,4 @@
+interface:
+  display_name: "PRD Plan Sync"
+  short_description: "Generate dependency-safe PRD/PLAN updates"
+  default_prompt: "Use $p4rd to update .agents/PRD.md and .agents/PLAN.md with validated pass states and a cycle-free dependency graph."
