@@ -1,20 +1,39 @@
 ---
 name: polybot
-description: Operate, troubleshoot, and orchestrate Polybot across Polymarket and MT5 lanes. Trigger when the user needs to start/stop the bot, check health/status, tune settings (risk, modules, profiles), execute trade approvals, or handle Telegram External mode callbacks.
+description: Operate, troubleshoot, and orchestrate Polybot across Polymarket and MT5 lanes in any environment that can inspect or act on a Polybot checkout. Use when Codex needs to check status or health, start or stop the runtime, tune settings, risk, modules, or profiles, run verification and reconciliation gates, execute or inspect trade approvals, or handle Telegram External mode callbacks. If commands cannot be executed in the current environment, use this skill to provide exact repo-root commands and explicit missing-capability guidance instead of pretending work was done.
 ---
 
 # Polybot Skill
 
-Use this skill when working inside a Polybot checkout. The repo root should contain `./polybot`, `./orch`, `AGENTS.md`, `OPERATIONS.md`, and `ARCHITECTURE.md`.
+Use this skill when working with a Polybot checkout. Do not assume a specific host or runtime. First determine whether you can execute commands, then operate from the repo root using the smallest safe command surface.
+
+## Start Here
+
+1. Locate the repo root.
+   - Prefer the nearest directory containing `./polybot`, `pyproject.toml`, `src/polybot/`, `AGENTS.md`, or `OPERATIONS.md`.
+   - If you started elsewhere, `cd` to that root before running commands.
+2. Determine environment capability.
+   - `execution-capable`: shell and filesystem access are available.
+   - `instruction-only`: you can read context but cannot run commands.
+3. Probe before claiming success.
+   - `pwd`
+   - `ls`
+   - `./polybot --help`
+   - `uv run polybot-trade --help`
+4. If a probe fails, stop and report the exact missing capability plus the real failing command or output. Do not imply that work completed when it did not.
 
 ## Ground Rules
 
 - Run commands from the repo root.
+- In shell-capable environments, prefer direct repo-root commands.
+- In direct runtimes such as ElyzeLabs `process`, prefer short one-shot commands and do not assume `tmux`, background harnesses, or interactive follow-up prompts.
+- In instruction-only environments, provide the exact commands in order and say they were not executed.
 - Prefer `./polybot` for lifecycle, settings, risk, modules, profiles, verification, and diagnostics.
 - Prefer `uv run polybot-trade ...` for manual Polymarket trade operations.
 - For one-off scripts not exposed by `./polybot`, use `uv run python src/polybot/scripts/...`.
 - Do not rely on legacy `python -m cli.trade` or root `scripts/*.py` compatibility paths.
 - Never edit SQLite files directly. Use CLI/API-backed mutations.
+- If required tools such as shell access, `uv`, `python3`, or the repo checkout are missing, fail fast with remediation instead of guessing.
 
 ## Core Workflow
 
@@ -24,6 +43,13 @@ Use this skill when working inside a Polybot checkout. The repo root should cont
    - always: `./polybot verify --strict`
    - after account/risk/execution changes: `./polybot verify-reconcile --strict`
    - after major release work: `./polybot verify-suite --deep`
+
+## Capability Fallbacks
+
+- If `./polybot --help` fails because the wrapper is missing, confirm you are in the correct checkout before doing anything else.
+- If `uv` is unavailable, report that Polybot's packaged commands cannot be run yet; do not substitute legacy entrypoints.
+- If you only have read access, limit yourself to inspection plus exact next-step commands for an operator.
+- When environment and docs disagree, trust live command help and the current `src/polybot/` tree over copied instructions.
 
 ## Canonical Commands
 
@@ -155,7 +181,7 @@ When `telegram_feedback_owner=external`, callbacks must be bridged back to the P
 
 ## Repo Context To Load
 
-When you need more detail, prefer these files from the workspace root:
+Load only what you need, in this order:
 
 - `AGENTS.md`: operator shortcuts and common-user-intent mappings
 - `OPERATIONS.md`: deployment, verification, and runtime safety procedures
@@ -170,4 +196,5 @@ When you need more detail, prefer these files from the workspace root:
 - Keep changes reversible and minimal.
 - Use dashboard/API-backed mutations before editing config or code.
 - After risky runtime changes, inspect `./polybot status`, `./polybot logs --since 1h`, and reconciliation gates.
+- For execution-constrained environments, present missing capabilities and next steps explicitly instead of fabricating execution.
 - If docs and runtime disagree, trust `./polybot --help`, `uv run polybot-trade --help`, and the current source tree under `src/polybot/`.
