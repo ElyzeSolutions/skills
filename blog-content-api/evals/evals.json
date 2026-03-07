@@ -1,0 +1,23 @@
+{
+  "skill_name": "blog-content-api",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm at home and want to publish a new post to my Blog from the terminal. Use the blog API, keep the slug exactly `winter-maintenance-log`, and mark it as a draft for now. The body should be markdown with a heading and two short paragraphs.",
+      "expected_output": "Uses the posts API with a draft payload, preserves the requested slug, and returns a terminal-friendly result.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Upload `./assets/nebula-cover.png` to my Blog and then create a project called `Nebula Terminal Workflow` with that image as hero media. The stack should include Astro, SQLite, and curl, and it should stay unpublished.",
+      "expected_output": "Uploads the image first, uses the returned uploads URL as hero_image, and creates the project through the API.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Update the Blog project with slug `terminal-first-publishing` so it becomes live, changes slug to `terminal-first-publishing-live`, and clears the hero image.",
+      "expected_output": "Uses the project PATCH route, updates the slug, publishes the project, and clears hero_image with null.",
+      "files": []
+    }
+  ]
+}
