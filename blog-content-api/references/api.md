@@ -31,6 +31,14 @@ Post payload:
 }
 ```
 
+Post update-only draft control:
+
+```json
+{
+  "draft_action": "preserve | discard | save | publish"
+}
+```
+
 ### Projects
 
 - `GET /api/projects?published=all|true|false`
@@ -84,6 +92,7 @@ Upload response:
 
 - Slugs are normalized server-side.
 - Posts require non-empty `title` and `content`.
+- Post updates can control pending draft state with `draft_action`.
 - Projects require non-empty `title` and `description`.
 - `published` accepts booleans and boolean-like values such as `true`, `false`, `1`, `0`, `live`, and `draft`.
 

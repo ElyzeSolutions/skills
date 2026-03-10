@@ -18,6 +18,12 @@
       "prompt": "Update the Blog project with slug `terminal-first-publishing` so it becomes live, changes slug to `terminal-first-publishing-live`, and clears the hero image.",
       "expected_output": "Uses the project PATCH route, updates the slug, publishes the project, and clears hero_image with null.",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Patch the post with slug `skills-i-use-with-codex` so the live content is updated and any stale admin draft is cleared in the same API request.",
+      "expected_output": "Uses the posts PATCH route with `draft_action: \"discard\"` so the live post is updated and the embedded draft fields are cleared.",
+      "files": []
     }
   ]
 }

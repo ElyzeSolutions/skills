@@ -1,6 +1,6 @@
 ---
 name: blog-content-api
-description: Use this skill whenever the user wants to publish, edit, delete, inspect, or automate blog posts and project entries for the Blog content API, especially from the terminal, shell scripts, CI, remote machines, or with API keys. Trigger on requests about blog publishing, project artifacts, slug changes, image uploads, curl examples, API docs, content automation, or syncing content into this Astro blog even if the user does not explicitly say "API."
+description: Use this skill whenever the user wants to publish, edit, delete, inspect, or automate blog posts and project entries for the Blog content API, especially from the terminal, shell scripts, CI, remote machines, or with API keys. Trigger on requests about blog publishing, project artifacts, slug changes, post draft save/discard/publish flows, image uploads, curl examples, API docs, content automation, or syncing content into this Astro blog even if the user does not explicitly say "API."
 compatibility: Requires shell access for curl or similar HTTP tooling. Works best when the Blog repo is available locally so the agent can read docs/content-api.md and src/lib/content-api-openapi.json.
 ---
 
@@ -20,6 +20,7 @@ If those files are missing, inspect the repo for `/api/posts`, `/api/projects`, 
 ## What this skill handles
 
 - Creating, listing, updating, and deleting posts
+- Saving, discarding, and publishing post drafts through the posts API
 - Creating, listing, updating, and deleting projects
 - Uploading images and wiring the returned `/uploads/...` URL into content
 - Generating ready-to-run terminal commands
@@ -43,15 +44,21 @@ If no deployment URL is available, use the local dev server URL only when that i
 
 2. Use the documented payloads instead of inventing fields.
 Posts use `title`, `slug`, `content`, and `published`.
-Projects use `title`, `slug`, `description`, `hero_image`, `technologies`, and `published`.
+Post updates also support `draft_action` with `preserve`, `discard`, `save`, or `publish`.
+Projects use `title`, `slug`, `description`, `hero_image`, `gallery_images`, `technologies`, and `published`.
 
 3. Upload images before creating content that references them.
 For posts, insert the returned URL into markdown image syntax.
-For projects, pass the returned URL as `hero_image`.
+For projects, pass the returned URL as `hero_image` or append it to `gallery_images`.
 
 4. Treat slugs as first-class.
 If the user provides a slug, preserve it unless they ask to change it.
 If they omit it, let the server normalize it from the title.
+
+When updating posts, be deliberate about draft state.
+Use `draft_action: "discard"` after a live API edit if the user wants to clear any stale admin draft shadow.
+Use `draft_action: "save"` to stage a draft remotely without changing the live post.
+Use `draft_action: "publish"` to stage and immediately promote the draft live.
 
 5. Return the result in a way the user can act on quickly.
 Summarize what endpoint you used, what was created or changed, and the final slug or upload URL.
@@ -92,6 +99,19 @@ curl -X POST "$BLOG_BASE_URL/api/upload-image" \
   -F "file=@./cover.png"
 ```
 
+### Update a post and clear any pending draft
+
+```sh
+curl -X PATCH "$BLOG_BASE_URL/api/posts/shipping-from-home" \
+  -H "Authorization: Bearer $BLOG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Shipping from home",
+    "content": "# Hello\n\nUpdated from the terminal.",
+    "draft_action": "discard"
+  }'
+```
+
 ### Create a project with uploaded media
 
 ```sh
@@ -102,6 +122,10 @@ curl -X POST "$BLOG_BASE_URL/api/projects" \
     "title": "Terminal-first publishing",
     "description": "Created remotely from a shell script.",
     "hero_image": "/uploads/1712345678901-cover.png",
+    "gallery_images": [
+      "/uploads/1712345678902-overview.webp",
+      "/uploads/1712345678903-detail.webp"
+    ],
     "technologies": ["Astro", "SQLite", "curl"],
     "published": false
   }'
