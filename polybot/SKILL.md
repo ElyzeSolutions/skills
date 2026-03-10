@@ -1,6 +1,13 @@
 ---
 name: polybot
 description: Operate, troubleshoot, and orchestrate Polybot across Polymarket and MT5 lanes in any environment that can inspect or act on a Polybot checkout. Use when Codex needs to check status or health, start or stop the runtime, tune settings, risk, modules, or profiles, run verification and reconciliation gates, execute or inspect trade approvals, or handle Telegram External mode callbacks. If commands cannot be executed in the current environment, use this skill to provide exact repo-root commands and explicit missing-capability guidance instead of pretending work was done.
+requiredTools:
+  - polybot
+allowedCommands:
+  - polybot
+  - ./polybot
+  - orch
+  - polybot-daemon
 ---
 
 # Polybot Skill
