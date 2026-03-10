@@ -56,6 +56,8 @@ polyx watch "query" --interval 1m --webhook <url>
 ### 5. User Profiles & Trends
 Fetch user profiles, timelines, and trending topics.
 
+Use `polyx search "topic"` for topic-specific requests such as "trends related to XAUUSD" or "recent discussion about Iran". Use `polyx trends` only for platform/location-wide trending topics, because it does not take a query string.
+
 ```bash
 # User profile
 polyx profile <username> --tweets 10
