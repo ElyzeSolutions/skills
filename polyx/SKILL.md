@@ -85,6 +85,6 @@ PolyX supports several output modes via global flags:
 ## Configuration & Auth
 - **API v2**: Requires `X_BEARER_TOKEN` (Bearer auth).
 - **GraphQL**: Requires `AUTH_TOKEN` and `CT0` cookies.
-- **AI**: Requires `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, or `XAI_API_KEY`.
+- **AI**: Requires `GOOGLE_API_KEY`, `OPENROUTER_API_KEY`, or `XAI_API_KEY`.
 
 See [cli_help.md](references/cli_help.md) for full parameter documentation.
