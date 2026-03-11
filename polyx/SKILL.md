@@ -26,6 +26,8 @@ polyx search "query"
 polyx search "query" --sentiment --no-noise --limit 50
 ```
 
+When emitting native `execute_command` payloads for Elyze/operator runs, prefer structured `argv` such as `["polyx", "search", "query"]`. Keep the full search query as one argv item instead of splitting natural-language queries into multiple positional words.
+
 ### 2. AI Analysis & Model Selection
 Analyze topics using Grok, Gemini, or OpenRouter. Supports unified "provider/model" syntax.
 
