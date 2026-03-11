@@ -34,6 +34,7 @@ Use this skill when working with a Polybot checkout. Do not assume a specific ho
 - Run commands from the repo root.
 - In shell-capable environments, prefer direct repo-root commands.
 - In direct runtimes such as ElyzeLabs `process`, prefer short one-shot commands and do not assume `tmux`, background harnesses, or interactive follow-up prompts.
+- When emitting native `execute_command` payloads for Elyze/operator runs, prefer structured `argv` such as `["polybot", "status"]` instead of raw shell-style `command` strings for normal operator actions.
 - In instruction-only environments, provide the exact commands in order and say they were not executed.
 - Prefer `./polybot` for lifecycle, settings, risk, modules, profiles, verification, and diagnostics.
 - Prefer `uv run polybot-trade ...` for manual Polymarket trade operations.
