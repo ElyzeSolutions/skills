@@ -1,12 +1,29 @@
 ---
 name: blog-content-api
-description: Use this skill whenever the user wants to publish, edit, delete, inspect, or automate blog posts and project entries for the Blog content API, especially from the terminal, shell scripts, CI, remote machines, or with API keys. Trigger on requests about blog publishing, project artifacts, slug changes, post draft save/discard/publish flows, image uploads, curl examples, API docs, content automation, or syncing content into this Astro blog even if the user does not explicitly say "API."
-compatibility: Requires shell access for curl or similar HTTP tooling. Works best when the Blog repo is available locally so the agent can read docs/content-api.md and src/lib/content-api-openapi.json.
+description: Use this skill whenever the user wants to publish, edit, delete, inspect, or automate blog posts and project entries for the Blog content API, especially from the Blog repo, terminal, shell scripts, CI, remote machines, or with API keys. Prefer the repo's private local CLI when available. Trigger on requests about blog publishing, project artifacts, slug changes, post draft save/discard/publish flows, image uploads, CLI commands, curl examples, API docs, content automation, or syncing content into this Astro blog even if the user does not explicitly say "API."
+compatibility: Requires shell access. Works best when the Blog repo is available locally so the agent can use `npm run blog -- ...` and read docs/content-api.md. Falls back to curl for remote-only environments.
 ---
 
 # Blog Content API
 
 Use this skill to operate the Blog content API safely and efficiently.
+
+## Preferred interface
+
+When working inside the Blog repo, prefer the private local CLI:
+
+```sh
+npm run blog -- <resource> <action> [options]
+```
+
+The CLI still calls the same HTTP API, so it needs:
+
+```sh
+export BLOG_BASE_URL='https://your-domain.com'
+export BLOG_API_KEY='paste-the-key-here'
+```
+
+Use `curl` only when the repo or CLI is unavailable, the user explicitly wants raw HTTP examples, or they are wiring a remote shell/CI job where npm scripts are not appropriate.
 
 ## Source of truth
 
@@ -23,7 +40,7 @@ If those files are missing, inspect the repo for `/api/posts`, `/api/projects`, 
 - Saving, discarding, and publishing post drafts through the posts API
 - Creating, listing, updating, and deleting projects
 - Uploading images and wiring the returned `/uploads/...` URL into content
-- Generating ready-to-run terminal commands
+- Generating ready-to-run CLI or curl commands
 - Explaining auth, payload shapes, slugs, and response formats
 
 ## Auth expectations
@@ -45,7 +62,7 @@ If no deployment URL is available, use the local dev server URL only when that i
 2. Use the documented payloads instead of inventing fields.
 Posts use `title`, `slug`, `content`, and `published`.
 Post updates also support `draft_action` with `preserve`, `discard`, `save`, or `publish`.
-Projects use `title`, `slug`, `description`, `hero_image`, `gallery_images`, `technologies`, and `published`.
+Projects use `title`, `slug`, `description`, `hero_image`, `gallery_images`, `technologies`, `status`, and `published`.
 
 3. Upload images before creating content that references them.
 For posts, insert the returned URL into markdown image syntax.
@@ -65,7 +82,35 @@ Summarize what endpoint you used, what was created or changed, and the final slu
 
 ## Terminal execution pattern
 
-Prefer `curl` unless the user already has another HTTP client in place.
+Prefer the local CLI when the Blog repo is available:
+
+1. Export configuration:
+`export BLOG_BASE_URL='https://your-domain.com'`
+`export BLOG_API_KEY='...'`
+2. Upload images if needed:
+`npm run blog -- upload-image ./cover.png`
+3. Create or update content with `posts` or `projects` commands.
+4. Report the returned ID, slug, and any upload URL.
+
+The CLI command map:
+
+- `npm run blog -- posts list --published all|true|false`
+- `npm run blog -- posts get <id-or-slug>`
+- `npm run blog -- posts create --title <title> --content-file <path> [--slug <slug>] [--published true|false]`
+- `npm run blog -- posts update <id-or-slug> [--title <title>] [--content-file <path>] [--draft-action preserve|discard|save|publish]`
+- `npm run blog -- posts delete <id-or-slug>`
+- `npm run blog -- projects list --published all|true|false`
+- `npm run blog -- projects get <id-or-slug>`
+- `npm run blog -- projects create --title <title> --description <text> [--hero-image <url>] [--gallery-image <url>] [--technology <name>] [--status active|shipped|archived] [--published true|false]`
+- `npm run blog -- projects update <id-or-slug> [--hero-image <url>|--clear-hero-image] [--gallery-image <url>|--clear-gallery] [--technology <name>|--clear-technologies]`
+- `npm run blog -- projects delete <id-or-slug>`
+- `npm run blog -- upload-image <path>`
+
+Use repeated `--gallery-image` and `--technology` flags for arrays.
+
+## Curl fallback pattern
+
+Use `curl` when the local CLI is not available or the user specifically needs raw HTTP.
 
 Typical flow:
 

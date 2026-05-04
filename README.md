@@ -1,93 +1,69 @@
 # AI Agent Skills
 
-A collection of specialized skills for AI agents (specifically optimized for Gemini and Claude). This repository serves as a central hub for my organization's agentic workflows, combining community-driven best practices with custom internal tools.
+A public collection of reusable skills for local coding agents. Each skill packages task-specific instructions and, when needed, supporting references, templates, scripts, or examples.
 
----
+## Install
 
-## 🚀 Setup & Installation
+These skills are designed to live at `~/.agents/skills`, which is a common discovery path for agent tooling such as Codex, Claude Code, and Gemini CLI.
 
-To use these skills, the **entire contents of this repository** must be available in your local agent environment. Agents like **Codex**, Gemini CLI, and Claude are configured to automatically discover and utilize these skills when they are placed in the standard directory.
+For macOS and Linux:
 
-### Required Path: `~/.agents/skills`
-
-### Quick Installation
-
-For macOS/Linux:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ElyzeSolutions/skills/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ElyzeSolutions/skills-new/main/install.sh | bash
 ```
 
-For Windows (PowerShell):
+For Windows PowerShell:
+
 ```powershell
-iwr https://raw.githubusercontent.com/ElyzeSolutions/skills/main/install.ps1 | iex
+iwr https://raw.githubusercontent.com/ElyzeSolutions/skills-new/main/install.ps1 | iex
 ```
 
-### 🪄 Compatibility (Manual Context)
+## What The Install Scripts Do
 
-For tools that don't natively support the `~/.agents/skills` path, you can provide the skill context manually using project-level configuration folders:
+`install.sh` and `install.ps1` are bootstrap scripts. They:
 
-- **`.claude`**: Symlink or copy specific skills into a `.claude` folder in your project root.
-- **`.antigravity`**: Used by older or alternative agent systems (inspired by Vercel's skill patterns).
-- **`.gemini`**: For Gemini-specific project context.
+1. Create `~/.agents` if it does not already exist.
+2. Clone this repository into `~/.agents/skills` on first install.
+3. Update the existing checkout on later runs.
+4. Point the local checkout at `ElyzeSolutions/skills-new` before updating.
 
-To link a skill to a project:
+If you prefer to install manually:
+
 ```bash
-# Example: Linking the Zustand skill
+git clone https://github.com/ElyzeSolutions/skills-new.git ~/.agents/skills
+```
+
+## Repository Layout
+
+Each skill lives in its own directory and usually includes:
+
+- `SKILL.md`: the main skill definition and usage guidance
+- `references/`: focused supporting documentation
+- `templates/`: reusable starter files
+- `scripts/`: utility scripts used by the skill
+- `examples/` or `assets/`: optional examples and supporting assets
+
+## Selected Skill Areas
+
+- Planning and skill authoring: `p4rd`, `skill-creator`, `find-skills`
+- Browser automation: `agent-browser`, `browser-use`, `playwright-cli`, `playwright-generate-test`
+- Frontend design and UX: `frontend-design`, `design-taste-frontend`, `redesign-existing-projects`, `web-design-guidelines`
+- React and state management: `zustand-state-management`, `react-state-management`, `tanstack-query-best-practices`, `tanstack-router-best-practices`, `tanstack-start-best-practices`
+- Performance and refactoring: `react-performance-optimization`, `python-performance-optimization`, `refactor-pass`, `vercel-react-best-practices`
+- Specialized workflows: `ai-sdk`, `obsidian`, `polybot`, `polyx`, `remotion-best-practices`, `websocket-engineer`
+
+## Using A Skill In A Project
+
+If your tool does not automatically read `~/.agents/skills`, you can symlink specific skills into project-local directories:
+
+```bash
 mkdir -p .claude
 ln -s ~/.agents/skills/zustand-state-management .claude/zustand
 ```
 
----
+## Contributing
 
-## 🛠 Available Skills
-
-### 🧠 Agent Autonomy & Planning
-- **[p4rd](./p4rd)**: Generate and maintain agent-ready PRDs and task plans with strict dependency integrity.
-- **[skill-creator](./skill-creator)**: Create, iterate, and benchmark new skills for AI agents.
-- **[find-skills](./find-skills)**: Helps agents discover and install relevant skills for their current task.
-
-### 🌐 Browser & Web Interaction
-- **[agent-browser](./agent-browser)**: Browser automation CLI for navigation, form filling, and data extraction.
-- **[browser-use](./browser-use)**: High-level browser interaction patterns.
-
-### 🎨 Frontend Design & UX
-- **[frontend-design](./frontend-design)**: Production-grade UI development and aesthetics.
-- **[design-taste-frontend](./design-taste-frontend)**: Senior UI/UX engineering guidelines.
-- **[redesign-existing-projects](./redesign-existing-projects)**: Audit and upgrade existing UIs.
-- **[web-design-guidelines](./web-design-guidelines)**: Accessibility, UX, and consistency auditing.
-
-### ⚛️ Frameworks & State Management
-- **[zustand-state-management](./zustand-state-management)**: Type-safe global state patterns for Zustand.
-- **[react-state-management](./react-state-management)**: Comprehensive guide for Redux, Jotai, and React Query.
-- **[tanstack-query-best-practices](./tanstack-query-best-practices)**: Advanced data fetching and caching.
-- **[tanstack-router-best-practices](./tanstack-router-best-practices)**: Type-safe routing and data loading.
-- **[tanstack-start-best-practices](./tanstack-start-best-practices)**: Full-stack React patterns.
-
-### ⚡ Performance & Optimization
-- **[react-performance-optimization](./react-performance-optimization)**: Memoization and code splitting strategies.
-- **[python-performance-optimization](./python-performance-optimization)**: Profiling and bottleneck elimination for Python.
-- **[refactor-pass](./refactor-pass)**: Focused cleanup and simplification.
-- **[vercel-react-best-practices](./vercel-react-best-practices)**: Performance guidelines from Vercel engineering.
-
-### 🔧 Specialized Tooling
-- **[ai-sdk](./ai-sdk)**: Best practices for building with the Vercel AI SDK.
-- **[obsidian](./obsidian)**: Sync project context into Obsidian.
-- **[polyx](./polyx)**: X/Twitter intelligence gathering, search, and AI-powered sentiment analysis.
-- **[remotion-best-practices](./remotion-best-practices)**: Programmatic video creation using React.
-- **[websocket-engineer](./websocket-engineer)**: Real-time communication and scaling.
-- **[grepai-search-advanced](./grepai-search-advanced)**: Advanced patterns for GrepAI.
-- **[full-output-enforcement](./full-output-enforcement)**: Ensures complete code generation without truncation.
-- **[capture-api-response-test-fixture](./capture-api-response-test-fixture)**: Capture API responses for testing.
-- **[list-npm-package-content](./list-npm-package-content)**: Verify bundle contents before publishing.
-- **[develop-ai-functions-example](./develop-ai-functions-example)**: Scaffolding for AI tool development.
-
----
-
-## 🤝 Contributing
-
-1. **Create a new skill**: Use the `skill-creator` patterns to bootstrap a new directory.
-2. **Follow the Standard**: Each skill must have a `SKILL.md` with YAML frontmatter (name, description).
-3. **Verify**: Ensure the skill includes necessary reference materials and scripts.
-
----
-*Maintained by the Organization. Built with ❤️ and AI.*
+1. Add or update a skill in its own directory.
+2. Keep `SKILL.md` concise, explicit, and production-oriented.
+3. Include only the references and scripts the skill actually needs.
+4. Avoid machine-specific paths, local state, generated caches, and secrets.

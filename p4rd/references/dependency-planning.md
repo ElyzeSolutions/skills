@@ -64,11 +64,11 @@ Keep pass state coherent with dependencies.
 Run dependency graph validation:
 
 ```bash
-python /Users/p4r4disi4c/.agents/skills/p4rd/scripts/validate_task_dependencies.py .agents/PLAN.md
+python "$HOME/.agents/skills/p4rd/scripts/validate_task_dependencies.py" .agents/PLAN.md
 ```
 
 Run this with strict order enforcement when preparing a clean topological plan:
 
 ```bash
-python /Users/p4r4disi4c/.agents/skills/p4rd/scripts/validate_task_dependencies.py .agents/PLAN.md --strict-order
+python "$HOME/.agents/skills/p4rd/scripts/validate_task_dependencies.py" .agents/PLAN.md --strict-order
 ```

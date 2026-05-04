@@ -172,19 +172,19 @@ For alignment waves, add tasks that clearly map to named gaps.
 Run dependency validation after editing PLAN:
 
 ```bash
-python /Users/p4r4disi4c/.agents/skills/p4rd/scripts/validate_task_dependencies.py .agents/PLAN.md
+python "$HOME/.agents/skills/p4rd/scripts/validate_task_dependencies.py" .agents/PLAN.md
 ```
 
 Run strict ordering validation when the task list must be fully topological:
 
 ```bash
-python /Users/p4r4disi4c/.agents/skills/p4rd/scripts/validate_task_dependencies.py .agents/PLAN.md --strict-order
+python "$HOME/.agents/skills/p4rd/scripts/validate_task_dependencies.py" .agents/PLAN.md --strict-order
 ```
 
 Run quick skill validation before finishing skill updates:
 
 ```bash
-python /Users/p4r4disi4c/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/p4r4disi4c/.agents/skills/p4rd
+python "$HOME/.agents/skills/skill-creator/scripts/quick_validate.py" "$HOME/.agents/skills/p4rd"
 ```
 
 ## Memory And Remediation Alignment Defaults

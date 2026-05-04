@@ -10,7 +10,7 @@ Bridge between Coding Agent sessions and your Obsidian vault. Syncs codebase sta
 ## Configuration
 
 ```
-VAULT_PATH = "/Users/p4r4disi4c/Google Drive/My Drive/LD-DOCUMENTS/Obsidian/ParaVault/AI/BRAIN"
+VAULT_PATH = "/absolute/path/to/your/Obsidian/vault"
 ```
 
 > **IMPORTANT:** Replace the path above with the absolute path to your vault before using this skill.
