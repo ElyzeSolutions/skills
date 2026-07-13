@@ -1,13 +1,17 @@
 # Issue tracker: Local Markdown
 
-Issues and PRDs for this repo live as markdown files in `.scratch/`.
+Issues and specs (you may know a spec as a PRD) for this repo live as markdown files in `.scratch/`.
 
 ## Conventions
 
 - One feature per directory: `.scratch/<feature-slug>/`
-- The PRD is `.scratch/<feature-slug>/PRD.md`
-- Implementation issues are `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`
-- Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
+- The spec is `.scratch/<feature-slug>/spec.md`
+- Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` — never a single combined tickets file
+- The category role is recorded as a `Category:` line near the top of each issue
+  file, using the configured tracker string for `bug` or `enhancement`
+- Triage state is recorded as a `Status:` line near the top of each issue file
+  (see `triage-labels.md` for the configured role strings); completed
+  implementation tickets use `Status: done`
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 
 ## When a skill says "publish to the issue tracker"
@@ -16,7 +20,9 @@ Create a new file under `.scratch/<feature-slug>/` (creating the directory if ne
 
 ## When a skill says "fetch the relevant ticket"
 
-Read the file at the referenced path. The user will normally pass the path or the issue number directly.
+Read the file at the referenced path. Because numbering restarts inside each
+feature, require either the full path or a feature-qualified identifier such as
+`<feature-slug>#<NN>`; never resolve a bare number across `.scratch/`.
 
 ## Wayfinding operations
 

@@ -5,7 +5,7 @@
 set -e
 
 SKILLS_DIR="$HOME/.agents/skills"
-REPO_URL="https://github.com/ElyzeSolutions/skills-new.git"
+REPO_URL="https://github.com/ElyzeSolutions/skills.git"
 
 echo "Setting up AI Agent Skills..."
 

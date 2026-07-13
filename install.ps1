@@ -1,7 +1,7 @@
 # Install or update the public skills repository in ~/.agents/skills.
 
 $skillsDir = Join-Path $HOME ".agents\skills"
-$repoUrl = "https://github.com/ElyzeSolutions/skills-new.git"
+$repoUrl = "https://github.com/ElyzeSolutions/skills.git"
 
 Write-Host "Setting up AI Agent Skills..." -ForegroundColor Cyan
 
@@ -38,4 +38,4 @@ if (Test-Path (Join-Path $skillsDir ".git")) {
 
 Write-Host "Setup complete." -ForegroundColor Green
 Write-Host "To expose a specific skill in a project, you can create a symlink into a local folder." -ForegroundColor Green
-Write-Host 'Example: New-Item -ItemType SymbolicLink -Path .claude\zustand -Target "$HOME\.agents\skills\zustand-state-management"'
+Write-Host 'Example: New-Item -ItemType SymbolicLink -Path .claude\tdd -Target "$HOME\.agents\skills\tdd"'
