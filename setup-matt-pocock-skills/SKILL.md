@@ -9,7 +9,7 @@ disable-model-invocation: true
 Scaffold the per-repo configuration that the engineering skills assume:
 
 - **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
-- **Workflow labels** — the strings used for the two category and five state roles
+- **Triage labels** — the strings used for the five canonical triage roles
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
@@ -27,8 +27,9 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `docs/agents/` — does this skill's prior output already exist?
 - `.scratch/` — sign that a local-markdown issue tracker convention is already in use
 - Are the `triage` and `wayfinder` skills installed? Check for sibling skill
-  folders or the available-skills list. This determines which hosted-tracker
-  labels must be provisioned.
+  folders or the available-skills list. `triage` affects which consumers use the
+  state labels; `wayfinder` determines whether its ticket-type labels are also
+  provisioned.
 - Monorepo signals — a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. Present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
 ### 2. Present findings and ask
@@ -39,7 +40,7 @@ Lead each section with the recommended answer so the user can accept it in a wor
 
 **Section A — Issue tracker.**
 
-> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, `to-spec`, and `wayfinder` read from and write to it — they need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo.
+> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, `to-spec`, and `qa-testing` read from and write to it — they need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo.
 
 Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that. If a `git remote` points at GitLab (`gitlab.com` or a self-hosted host), propose GitLab. Otherwise (or if the user prefers), offer:
 
@@ -50,19 +51,19 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 
 Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off** — leave it off and don't raise it; a user who wants external PRs in the triage queue can flip the flag in the file later.
 
-**Section B — Workflow label vocabulary.** These state roles are also used by
+**Section B — Workflow label vocabulary.** These state roles are used by
 `to-spec` and `to-tickets`, so configure them even when `triage` is absent.
 
 Ask exactly one question:
 
 > Do you want to keep the default triage labels? (recommended: **yes**)
 
-The defaults are seven canonical roles, each label string equal to its name:
-category roles `bug` and `enhancement`, plus state roles `needs-triage`,
-`needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. On **yes**,
-write them as-is. Only if the user says no — usually because their tracker
-already uses other names (e.g. `bug:triage` for `needs-triage`) — collect the
-overrides so skills apply existing labels instead of creating duplicates.
+The defaults are the five canonical state roles, each label string equal to its
+name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and
+`wontfix`. On **yes**, write them as-is. Only if the user says no — usually
+because their tracker already uses other names (e.g. `bug:triage` for
+`needs-triage`) — collect the overrides so skills apply existing labels instead
+of creating duplicates.
 
 For GitHub or GitLab, also prepare the set of missing labels to create. If
 `wayfinder` is installed, include `wayfinder:map`, `wayfinder:research`,
@@ -122,7 +123,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-github.md](./issue-tracker-github.md) — GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md) — GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
-- [triage-labels.md](./triage-labels.md) — category/state label mapping
+- [triage-labels.md](./triage-labels.md) — state-label mapping
 - [domain.md](./domain.md) — domain doc consumer rules + layout
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.

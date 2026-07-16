@@ -1,13 +1,10 @@
 ---
 name: to-spec
-description: Turn the current conversation into a spec and publish it to the project issue tracker — synthesize what was already discussed, with only a focused confirmation of proposed test seams.
+description: Turn the current conversation into a spec and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
 disable-model-invocation: true
 ---
 
-This skill takes the current conversation context and codebase understanding and
-produces a spec (you may know this document as a PRD). Do not reopen a broad
-requirements interview: synthesize what you already know and ask only the
-focused test-seam confirmation in step 2.
+This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD). Do NOT interview the user — just synthesize what you already know.
 
 The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
 
@@ -19,9 +16,7 @@ The issue tracker and triage label vocabulary should have been provided to you �
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue
-tracker. Apply the appropriate `bug` or `enhancement` category role plus the
-`ready-for-agent` state role — no additional triage is needed.
+3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
 <spec-template>
 

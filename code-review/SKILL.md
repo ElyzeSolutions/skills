@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review committed and work-in-progress changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the change match what the originating issue/PRD asked for?). Runs both reviews in parallel read-only subagents and reports them side by side. Use when the user wants to review a branch, PR, staged/unstaged work, or asks to "review since X".
+description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/PRD asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 ---
 
 Two-axis review of the complete change since a fixed point, including committed,
@@ -32,7 +32,7 @@ Capture the review scope once:
 Before going further, confirm the fixed point resolves (`git rev-parse
 <fixed-point>`). Continue when any part of the scope above is non-empty. A bad
 ref or a completely empty committed-and-working-tree scope should fail here —
-not inside the subagents.
+not inside the sub-agents.
 
 ### 2. Identify the spec source
 
@@ -67,14 +67,15 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn both subagents in parallel
+### 4. Spawn both sub-agents in parallel
 
-Use the host agent's native subagent mechanism to start two independent,
+Use the host agent's native sub-agent mechanism to start two independent,
 strictly read-only reviewers in parallel. In Codex, use two collaboration
-subagents with non-overlapping task names; do not refer to an `Agent` tool or a
-model-specific agent type. Give both reviewers the repository path, fixed point,
-and all scope commands from step 1. They may inspect files and run read-only
-commands but must not edit, stage, commit, push, or mutate external systems.
+sub-agents with non-overlapping task names. Do not assume a model-specific
+`Agent` tool or sub-agent type exists. Give both reviewers the repository path,
+fixed point, and every scope command from step 1. They may inspect files and run
+read-only commands but must not edit, stage, commit, push, or mutate external
+systems.
 
 **Standards sub-agent prompt** — include:
 
