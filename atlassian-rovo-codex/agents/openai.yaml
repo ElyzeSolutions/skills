@@ -1,0 +1,4 @@
+interface:
+  display_name: "Atlassian Rovo MCP (Codex)"
+  short_description: "Set up Jira/Confluence OAuth MCP in Codex"
+  default_prompt: "Use $atlassian-rovo-codex to configure and verify Atlassian OAuth access for Jira and Confluence in Codex."

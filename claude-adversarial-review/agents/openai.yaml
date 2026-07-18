@@ -1,0 +1,4 @@
+interface:
+  display_name: "Claude Adversarial Review"
+  short_description: "Challenge code and tests with Claude"
+  default_prompt: "Use $claude-adversarial-review to pressure-test the current changes before shipping."
