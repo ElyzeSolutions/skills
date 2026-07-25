@@ -10,10 +10,10 @@ usage() {
 Usage: review.sh [--fast|--deep|--frontier] [--force] [--no-fallback] [base-ref] [focus]
 
 Profiles:
-  --fast      Sonnet/low for explicitly requested small, low-risk reviews
-  default     Sonnet/medium for normal production changes
-  --deep      Opus/high for security, auth, payments, migrations, concurrency, or data-loss risk
-  --frontier  Fable/high for exceptional architecture or explicitly requested frontier review
+  --fast      Sonnet 5/low only for explicitly requested easy, small, low-risk reviews
+  default     Opus 5/medium for most production changes
+  --deep      Opus 5/high for security, auth, payments, migrations, concurrency, or data-loss risk
+  --frontier  Fable 5/high only for genuinely exceptional cross-system complexity
 EOF
 }
 
@@ -67,22 +67,22 @@ fi
 
 case "${profile}" in
   fast)
-    model="${CLAUDE_REVIEW_MODEL:-sonnet}"
+    model="${CLAUDE_REVIEW_MODEL:-claude-sonnet-5}"
     effort="${CLAUDE_REVIEW_EFFORT:-low}"
     default_timeout=300
     ;;
   standard)
-    model="${CLAUDE_REVIEW_MODEL:-sonnet}"
+    model="${CLAUDE_REVIEW_MODEL:-claude-opus-5}"
     effort="${CLAUDE_REVIEW_EFFORT:-medium}"
     default_timeout=600
     ;;
   deep)
-    model="${CLAUDE_REVIEW_MODEL:-opus}"
+    model="${CLAUDE_REVIEW_MODEL:-claude-opus-5}"
     effort="${CLAUDE_REVIEW_EFFORT:-high}"
     default_timeout=900
     ;;
   frontier)
-    model="${CLAUDE_REVIEW_MODEL:-fable}"
+    model="${CLAUDE_REVIEW_MODEL:-claude-fable-5}"
     effort="${CLAUDE_REVIEW_EFFORT:-high}"
     default_timeout=900
     ;;

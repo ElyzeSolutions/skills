@@ -10,13 +10,17 @@ edit files or delegate back to Codex. Avoid repeated reviews of the same work.
 
 ## Risk profiles
 
-- `--fast`: Sonnet at low effort for a user-requested review of a small,
-  low-risk change. Low-risk work does not otherwise require external review.
-- Default: Sonnet at medium effort for normal production changes.
-- `--deep`: Opus at high effort for auth, payments, migrations, concurrency,
+- `--fast`: Sonnet 5 at low effort only for a user-requested review of an easy,
+  small, low-risk change. Low-risk work does not otherwise require external
+  review.
+- Default: Opus 5 at medium effort for most production changes.
+- `--deep`: Opus 5 at high effort for auth, payments, migrations, concurrency,
   security, data-loss, destructive behavior, or comparable high-risk work.
-- `--frontier`: Fable at high effort only for exceptional cross-system
-  architecture, the most consequential release gates, or an explicit request.
+- `--frontier`: Fable 5 at high effort only when the review is genuinely
+  exceptional in complexity, such as novel cross-system architecture with
+  several interacting failure domains or a uniquely difficult, consequential
+  release gate. High risk, large diffs, prestige, or an explicit request alone
+  do not meet this threshold.
 
 ## Workflow
 
@@ -51,9 +55,17 @@ edit files or delegate back to Codex. Avoid repeated reviews of the same work.
   reciprocal Codex-to-Claude review path.
 - Use a fresh non-persistent session so implementation context does not anchor the
   reviewer.
-- Default to Sonnet at medium effort. Escalate by risk rather than task size or
-  habit. Override with `CLAUDE_REVIEW_MODEL` or `CLAUDE_REVIEW_EFFORT` only for a
-  deliberate exception.
+- Default to Opus 5 at medium effort for most reviews. Use Sonnet 5 only for the
+  easy, small, low-risk `--fast` profile. Increase Opus 5's effort with `--deep`
+  for high-risk work before considering a different model.
+- Use Fable 5 only for genuinely exceptional complexity that materially benefits
+  from the frontier model. Do not select it merely because a change is large,
+  security-sensitive, consequential, or explicitly asks for a frontier review;
+  those cases stay on Opus 5 unless they also cross the exceptional-complexity
+  threshold.
+- The pinned model IDs are `claude-sonnet-5`, `claude-opus-5`, and
+  `claude-fable-5`. Override with `CLAUDE_REVIEW_MODEL` or
+  `CLAUDE_REVIEW_EFFORT` only for a deliberate exception.
 - Profile timeouts are five minutes for `--fast`, ten minutes by default, and
   fifteen minutes for `--deep` and `--frontier`. Override with
   `CLAUDE_REVIEW_TIMEOUT_SECONDS` only when deliberately justified.
