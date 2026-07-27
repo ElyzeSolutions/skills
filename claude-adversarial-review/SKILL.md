@@ -66,8 +66,10 @@ edit files or delegate back to Codex. Avoid repeated reviews of the same work.
 - The pinned model IDs are `claude-sonnet-5`, `claude-opus-5`, and
   `claude-fable-5`. Override with `CLAUDE_REVIEW_MODEL` or
   `CLAUDE_REVIEW_EFFORT` only for a deliberate exception.
-- Profile timeouts are five minutes for `--fast`, ten minutes by default, and
-  fifteen minutes for `--deep` and `--frontier`. Override with
+- Profile timeouts are five minutes for `--fast`, ten minutes by default,
+  thirty minutes for `--deep`, and fifteen minutes for `--frontier`. Each
+  profile also gives the reviewer a smaller soft inspection-turn budget so it
+  reserves time to return the required contract. Override the hard limit with
   `CLAUDE_REVIEW_TIMEOUT_SECONDS` only when deliberately justified.
 - Review the final merge-base diff, staged and unstaged changes, and relevant
   untracked files. Prioritize the changed paths supplied by the wrapper; inspect
@@ -83,12 +85,20 @@ edit files or delegate back to Codex. Avoid repeated reviews of the same work.
   read-only `codex-auto-review` fallback. This is a second-context review, not an
   independent-provider review. For `--deep` or `--frontier`, report degraded
   independence and do not treat the fallback as clearing the release gate.
+- A Claude timeout or an exit without a complete output contract may also run
+  the fallback for diagnostic value. The wrapper reports these conditions
+  explicitly; a high-risk fallback still does not clear the independent gate.
 - Set `CLAUDE_REVIEW_FALLBACK=0` to prohibit fallback. Set
   `CLAUDE_REVIEW_COOLDOWN_SECONDS` to tune the default 30-minute cooldown.
 - Structured invocation telemetry is appended beneath
   `${XDG_CACHE_HOME:-$HOME/.cache}/codex/claude-adversarial-review/`; it contains
   timestamps, repository path, fingerprint, profile, reviewer, model, effort,
-  duration, exit status, and cache state, but not prompts or source contents.
+  configured timeout, duration, exit status, failure reason, completed turn
+  count, output size, last event type, and cache state, but not prompts or source
+  contents.
+- Claude output is consumed as a streaming event sequence so bounded progress is
+  visible during long reviews. Only a non-empty final result containing every
+  required section and an allowed verdict is cached or treated as successful.
 - Demand exact file and line evidence, a concrete failure mode, and severity.
 - Treat tests as code under review. Challenge missing negative cases and tests that
   merely restate the implementation.
