@@ -16,21 +16,7 @@ description: Set up Husky pre-commit hooks with lint-staged (Prettier), type che
 
 ### 1. Detect package manager
 
-Check for `package-lock.json` (npm), `pnpm-lock.yaml` (pnpm), `yarn.lock` (Yarn),
-or `bun.lock`/`bun.lockb` (Bun). Use whichever is present. Default to npm if
-unclear.
-
-Use that package manager consistently:
-
-| Manager | Add dev dependencies | Run a local binary | Run a script |
-| --- | --- | --- | --- |
-| npm | `npm install --save-dev` | `npx` | `npm run` |
-| pnpm | `pnpm add --save-dev` | `pnpm exec` | `pnpm run` |
-| Yarn | `yarn add --dev` | `yarn` | `yarn` |
-| Bun | `bun add --dev` | `bunx` | `bun run` |
-
-In the commands below, replace `<exec>` and `<run>` with the detected row. Do
-not fall back to `npx` in a pnpm, Yarn, or Bun repository.
+Check for `package-lock.json` (npm), `pnpm-lock.yaml` (pnpm), `yarn.lock` (yarn), `bun.lockb` (bun). Use whichever is present. Default to npm if unclear.
 
 ### 2. Install dependencies
 
@@ -43,7 +29,7 @@ husky lint-staged prettier
 ### 3. Initialize Husky
 
 ```bash
-<exec> husky init
+npx husky init
 ```
 
 This creates `.husky/` dir and adds `prepare: "husky"` to package.json.
@@ -53,13 +39,12 @@ This creates `.husky/` dir and adds `prepare: "husky"` to package.json.
 Write this file (no shebang needed for Husky v9+):
 
 ```
-<exec> lint-staged
-<run> typecheck
-<run> test
+npx lint-staged
+npm run typecheck
+npm run test
 ```
 
-If the repo has no `typecheck` or `test` script in `package.json`, omit those
-lines and tell the user.
+**Adapt**: Replace `npm` with detected package manager. If repo has no `typecheck` or `test` script in package.json, omit those lines and tell the user.
 
 ### 5. Create `.lintstagedrc`
 
@@ -91,17 +76,13 @@ Only create if no Prettier config exists. Use these defaults:
 - [ ] `.lintstagedrc` exists
 - [ ] `prepare` script in package.json is `"husky"`
 - [ ] `prettier` config exists
-- [ ] Run `<exec> lint-staged` to verify it works
+- [ ] Run `npx lint-staged` to verify it works
 
-### 8. Commit when requested
+### 8. Commit
 
-If the user requested a commit, stage only the hook/configuration files created
-or changed by this task and commit them with a concise message such as
-`chore: add pre-commit hooks`. Preserve unrelated worktree changes.
+Stage all changed/created files and commit with message: `Add pre-commit hooks (husky + lint-staged + prettier)`
 
-The commit will run through the new hook as an additional smoke test. Without
-commit authority, stop after the explicit verification in step 7 and report the
-uncommitted files.
+This will run through the new pre-commit hooks — a good smoke test that everything works.
 
 ## Notes
 

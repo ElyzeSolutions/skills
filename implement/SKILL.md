@@ -12,6 +12,4 @@ Run typechecking regularly, single test files regularly, and the full test suite
 
 Once done, use /code-review to review the work.
 
-Commit only when the user requested a commit or the enclosing workflow
-explicitly grants commit or shipping authority. Stage only files owned by this
-task, preserve unrelated worktree changes, and report the resulting commit.
+Commit your work to the current branch.

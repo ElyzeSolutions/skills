@@ -1,6 +1,6 @@
 # Issue tracker: Local Markdown
 
-Issues and specs (you may know a spec as a PRD) for this repo live as markdown files in `.scratch/`.
+Issues and specs for this repo live as markdown files in `.scratch/`.
 
 ## Conventions
 
@@ -16,9 +16,7 @@ Create a new file under `.scratch/<feature-slug>/` (creating the directory if ne
 
 ## When a skill says "fetch the relevant ticket"
 
-Read the file at the referenced path. Because numbering restarts inside each
-feature, require either the full path or a feature-qualified identifier such as
-`<feature-slug>#<NN>`; never resolve a bare number across `.scratch/`.
+Read the file at the referenced path. The user will normally pass the path or the issue number directly.
 
 ## Wayfinding operations
 
