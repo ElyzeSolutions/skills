@@ -1,72 +1,97 @@
 ---
 name: chrome-devtools
-description: Uses Chrome DevTools via MCP for efficient debugging, troubleshooting and browser automation. Use when debugging web pages, automating browser interactions, analyzing performance, or inspecting network requests. This skill does not apply to `--slim` mode (MCP configuration).
+description: 'Expert-level browser automation, debugging, and performance analysis using Chrome DevTools MCP. Use for interacting with web pages, capturing screenshots, analyzing network traffic, and profiling performance.'
+license: MIT
 ---
 
-## Core Concepts
+# Chrome DevTools Agent
 
-**Browser lifecycle**: Browser starts automatically on first tool call using a persistent Chrome profile. Configure via CLI args in the MCP server configuration: `npx chrome-devtools-mcp@latest --help`.
-Additional tooling can be enabled by providing the following flags:
+## Overview
 
-- For extension tooling, use the `--categoryExtensions` flag.
-- For memory tooling, use the `--memoryDebugging` flag.
+A specialized skill for controlling and inspecting a live Chrome browser. This skill leverages the `chrome-devtools` MCP server to perform a wide range of browser-related tasks, from simple navigation to complex performance profiling.
 
-**Page selection**: Tools operate on the currently selected page. Use `list_pages` to see available pages, then `select_page` to switch context.
-**Element interaction**: Use `take_snapshot` to get page structure with element `uid`s. Each element has a unique `uid` for interaction. If an element isn't found, take a fresh snapshot - the element may have been removed or the page changed.
+## When to Use
+
+Use this skill when:
+
+- **Browser Automation**: Navigating pages, clicking elements, filling forms, and handling dialogs.
+- **Visual Inspection**: Taking screenshots or text snapshots of web pages.
+- **Debugging**: Inspecting console messages, evaluating JavaScript in the page context, and analyzing network requests.
+- **Performance Analysis**: Recording and analyzing performance traces to identify bottlenecks and Core Web Vital issues.
+- **Emulation**: Resizing the viewport or emulating network/CPU conditions.
+
+## Tool Categories
+
+### 1. Navigation & Page Management
+
+- `new_page`: Open a new tab/page.
+- `navigate_page`: Go to a specific URL, reload, or navigate history.
+- `select_page`: Switch context between open pages.
+- `list_pages`: See all open pages and their IDs.
+- `close_page`: Close a specific page.
+- `wait_for`: Wait for specific text to appear on the page.
+
+### 2. Input & Interaction
+
+- `click`: Click on an element (use `uid` from snapshot).
+- `fill` / `fill_form`: Type text into inputs or fill multiple fields at once.
+- `hover`: Move the mouse over an element.
+- `press_key`: Send keyboard shortcuts or special keys (e.g., "Enter", "Control+C").
+- `drag`: Drag and drop elements.
+- `handle_dialog`: Accept or dismiss browser alerts/prompts.
+- `upload_file`: Upload a file through a file input.
+
+### 3. Debugging & Inspection
+
+- `take_snapshot`: Get a text-based accessibility tree (best for identifying elements).
+- `take_screenshot`: Capture a visual representation of the page or a specific element.
+- `list_console_messages` / `get_console_message`: Inspect the page's console output.
+- `evaluate_script`: Run custom JavaScript in the page context.
+- `list_network_requests` / `get_network_request`: Analyze network traffic and request details.
+
+### 4. Emulation & Performance
+
+- `resize_page`: Change the viewport dimensions.
+- `emulate`: Throttling CPU/Network or emulating geolocation.
+- `performance_start_trace`: Start recording a performance profile.
+- `performance_stop_trace`: Stop recording and save the trace.
+- `performance_analyze_insight`: Get detailed analysis from recorded performance data.
 
 ## Workflow Patterns
 
-### Before interacting with a page
+### Pattern A: Identifying Elements (Snapshot-First)
 
-1. Navigate: `navigate_page` or `new_page`
-2. Wait: `wait_for` to ensure content is loaded if you know what you look for.
-3. Snapshot: `take_snapshot` to understand page structure
-4. Interact: Use element `uid`s from snapshot for `click`, `fill`, etc.
+Always prefer `take_snapshot` over `take_screenshot` for finding elements. The snapshot provides `uid` values which are required by interaction tools.
 
-### Efficient data retrieval
+```markdown
+1. `take_snapshot` to get the current page structure.
+2. Find the `uid` of the target element.
+3. Use `click(uid=...)` or `fill(uid=..., value=...)`.
+```
 
-- Use `filePath` parameter for large outputs (screenshots, snapshots, traces)
-- Use pagination (`pageIdx`, `pageSize`) and filtering (`types`) to minimize data
-- Set `includeSnapshot: false` on input actions unless you need updated page state
+### Pattern B: Troubleshooting Errors
 
-### Tool selection
+When a page is failing, check both console logs and network requests.
 
-- **Automation/interaction**: `take_snapshot` (text-based, faster, better for automation)
-- **Visual inspection**: `take_screenshot` (when user needs to see visual state)
-- **Additional details**: `evaluate_script` for data not in accessibility tree
+```markdown
+1. `list_console_messages` to check for JavaScript errors.
+2. `list_network_requests` to identify failed (4xx/5xx) resources.
+3. `evaluate_script` to check the value of specific DOM elements or global variables.
+```
 
-### Parallel execution
+### Pattern C: Performance Profiling
 
-You can send multiple tool calls in parallel, but maintain correct order: navigate → wait → snapshot → interact.
+Identify why a page is slow.
 
-### Testing an extension
+```markdown
+1. `performance_start_trace(reload=true, autoStop=true)`
+2. Wait for the page to load/trace to finish.
+3. `performance_analyze_insight` to find LCP issues or layout shifts.
+```
 
-> **Before proceeding**: Extension tools (`install_extension`, `list_extensions`, etc.) are only available when the MCP server is started with the `--categoryExtensions` flag. If these tools are not in your tool list, stop and ask the user to update their MCP server configuration:
->
-> ```json
-> {
->   "mcpServers": {
->     "chrome-devtools": {
->       "command": "npx",
->       "args": ["chrome-devtools-mcp@latest", "--categoryExtensions"]
->     }
->   }
-> }
-> ```
->
-> After updating, the user must restart the MCP server (or their AI client) for the change to take effect.
+## Best Practices
 
-1. **Install**: Use `install_extension` with the path to the unpacked extension.
-2. **Identify**: Get the extension ID from the response or by calling `list_extensions`.
-3. **Trigger Action**: Use `trigger_extension_action` to open the popup or side panel if applicable.
-4. **Verify Service Worker**: Use `evaluate_script` with `serviceWorkerId` to check extension state or trigger background actions.
-5. **Verify Page Behavior**: Navigate to a page where the extension operates and use `take_snapshot` to check if content scripts injected elements or modified the page correctly.
-
-## Troubleshooting
-
-If `chrome-devtools-mcp` is insufficient, guide users to use Chrome DevTools UI:
-
-- https://developer.chrome.com/docs/devtools
-- https://developer.chrome.com/docs/devtools/ai-assistance
-
-If there are errors launching `chrome-devtools-mcp` or Chrome, refer to https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/troubleshooting.md.
+- **Context Awareness**: Always run `list_pages` and `select_page` if you are unsure which tab is currently active.
+- **Snapshots**: Take a new snapshot after any major navigation or DOM change, as `uid` values may change.
+- **Timeouts**: Use reasonable timeouts for `wait_for` to avoid hanging on slow-loading elements.
+- **Screenshots**: Use `take_screenshot` sparingly for visual verification, but rely on `take_snapshot` for logic.

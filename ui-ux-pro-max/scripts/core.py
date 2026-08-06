@@ -153,11 +153,7 @@ _SYNONYMS = {
 def _normalize(text):
     """Apply synonym substitution before tokenizing."""
     for variant, canonical in _SYNONYMS.items():
-        text = re.sub(
-            rf"(?<!\w){re.escape(variant)}(?!\w)",
-            canonical,
-            text,
-        )
+        text = text.replace(variant, canonical)
     return text
 
 

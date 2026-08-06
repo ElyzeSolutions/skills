@@ -9,8 +9,7 @@ Usage: python search.py "<query>" [--domain <domain>] [--stack <stack>] [--max-r
 
 Domains: style, color, chart, landing, product, ux, typography, google-fonts, icons, gsap, react, web
 Stacks: react, nextjs, vue, svelte, astro, swiftui, react-native, flutter, nuxtjs, nuxt-ui,
-        html-tailwind, shadcn, jetpack-compose, threejs, angular, laravel, javafx, wpf,
-        winui, avalonia, uno, uwp
+        html-tailwind, shadcn, jetpack-compose, threejs, angular, laravel
 
 Design dials (1-10, only with --design-system):
   --variance   DESIGN_VARIANCE: 1=centered/minimal, 10=bold/asymmetric
@@ -22,8 +21,8 @@ Persistence (Master + Overrides pattern):
   --output-dir   Directory the design-system/ folder is created under (defaults to cwd --
                  always pass this explicitly, pointed at the project root)
   --page         Also create a page-specific override file in design-system/<project-slug>/pages/
-  --force        Overwrite existing master/page files (without this, existing files
-                 are preserved while a new page override may still be added)
+  --force        Overwrite an existing MASTER.md (without this, persistence is skipped
+                 if MASTER.md already exists, so prior design decisions aren't lost)
 """
 
 import argparse
@@ -102,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("--persist", action="store_true", help="Save design system to design-system/<project-slug>/MASTER.md (creates hierarchical structure)")
     parser.add_argument("--page", type=str, default=None, help="Create page-specific override file in design-system/<project-slug>/pages/")
     parser.add_argument("--output-dir", "-o", type=str, default=None, help="Output directory for persisted files (default: current directory -- pass this explicitly, pointed at the project root)")
-    parser.add_argument("--force", action="store_true", help="Overwrite existing master/page files when persisting (default: preserve existing files)")
+    parser.add_argument("--force", action="store_true", help="Overwrite an existing MASTER.md when persisting (default: skip if it already exists)")
     # Design dials (1-10), only applied with --design-system
     parser.add_argument("--variance", type=int, choices=range(1, 11), metavar="1-10", help="DESIGN_VARIANCE dial: 1=centered/minimal, 10=bold/asymmetric (only with --design-system)")
     parser.add_argument("--motion", type=int, choices=range(1, 11), metavar="1-10", help="MOTION_INTENSITY dial: 1=subtle, 10=complex; pulls a matching GSAP snippet from motion.csv (only with --design-system)")

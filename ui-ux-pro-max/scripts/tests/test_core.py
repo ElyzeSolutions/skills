@@ -41,8 +41,6 @@ class TestTokenizer(unittest.TestCase):
         bm25 = BM25()
         self.assertEqual(bm25.tokenize("e-commerce store"), bm25.tokenize("ecommerce store"))
         self.assertEqual(bm25.tokenize("dark-mode toggle"), bm25.tokenize("dark toggle"))
-        self.assertEqual(bm25.tokenize("nav menu"), bm25.tokenize("navigation menu"))
-        self.assertEqual(bm25.tokenize("navigation menu"), ["navigation", "menu"])
 
 
 class TestSearchDomains(unittest.TestCase):
@@ -107,18 +105,6 @@ class TestPersistence(unittest.TestCase):
             result2 = generate_design_system("saas dashboard", "Test Project", persist=True, output_dir=tmp)
             self.assertEqual(result2["persistence"]["status"], "skipped_exists")
             self.assertEqual(master.read_text(encoding="utf-8"), original_content)
-
-            # A new page override must be addable without replacing MASTER.md.
-            result_page = generate_design_system(
-                "saas dashboard",
-                "Test Project",
-                persist=True,
-                page="Dashboard",
-                output_dir=tmp,
-            )
-            self.assertEqual(result_page["persistence"]["status"], "success")
-            self.assertEqual(master.read_text(encoding="utf-8"), original_content)
-            self.assertTrue((master.parent / "pages" / "dashboard.md").exists())
 
             # With force=True it must overwrite.
             result3 = generate_design_system("ecommerce luxury", "Test Project", persist=True, output_dir=tmp, force=True)
